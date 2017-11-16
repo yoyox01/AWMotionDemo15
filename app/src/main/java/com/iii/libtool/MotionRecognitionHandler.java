@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -205,7 +206,39 @@ public class MotionRecognitionHandler implements DataHandler{
             return result;
         }
 	}
+    public  void sentData(final String mData){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
 
+                    String uri = Uri.parse("http://140.123.175.101:8888/")
+                            .buildUpon()
+                            .appendQueryParameter("data",mData)
+                            .build().toString();
+                    URL url = new URL(uri);
+
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    InputStream inputStream     = urlConnection.getInputStream();
+                    BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
+                    String tempStr;
+                    StringBuffer stringBuffer = new StringBuffer();
+
+                    while( ( tempStr = bufferedReader.readLine() ) != null ) {
+                        stringBuffer.append( tempStr );
+                    }
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    urlConnection.disconnect();
+                    Log.d("fuck",stringBuffer.toString());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
 
     // HEARRRRRRRRRRRRRRRRRRRRRR~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -218,11 +251,6 @@ public class MotionRecognitionHandler implements DataHandler{
 
 
         //float amount=100.00f;
-
-
-
-
-
 
         if(seg.isInMotion()){
             if(in_motion_listener != null)
@@ -284,10 +312,7 @@ public class MotionRecognitionHandler implements DataHandler{
 
                     fop.flush();
                     fop.close();
-
-                    //GET
-                    //connectInternet.start();
-
+                    sentData("我媽寶"+Math.random());
 
                 }
                 catch (IOException e) {
@@ -303,15 +328,6 @@ public class MotionRecognitionHandler implements DataHandler{
                         e.printStackTrace();
                     }
                 }
-
-
-
-
-
-
-
-
-
 
                 id = motionSDK.predictActivity(one_groups_data, c);
                 MotionID = id;
