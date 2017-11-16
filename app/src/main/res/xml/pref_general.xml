@@ -1,0 +1,95 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="split_option"
+
+        android:title="@string/pref_title_split_option" />
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+     dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/pref_split_method_list_titles"
+        android:entryValues="@array/pref_split_method_list_values"
+        android:dependency="split_option"
+        android:key="split_method"
+        android:negativeButtonText="取消"
+        android:positiveButtonText="確定"
+        android:title="@string/pref_title_split_method" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="order_option"
+        android:dependency="split_option"
+        android:summary="@string/pref_description_split_method"
+        android:title="@string/pref_title_order_option" />
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_repeat_times"
+        android:inputType="number"
+        android:dependency="order_option"
+        android:key="repeat_times"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_repeat_times" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_max_motion"
+        android:inputType="number"
+        android:dependency="split_option"
+        android:key="max_motion"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_max_motion" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_low_tolerant"
+        android:inputType="number"
+        android:dependency="split_option"
+        android:key="low_tolerant"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_low_tolerant" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_low_threshold"
+        android:inputType="number"
+        android:dependency="split_option"
+        android:key="low_threshold"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_low_threshold" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_high_threshold"
+        android:inputType="number"
+        android:dependency="split_option"
+        android:key="high_threshold"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_high_threshold" />
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/pref_split_depend_list_titles"
+        android:entryValues="@array/pref_split_depend_list_values"
+        android:dependency="split_option"
+        android:key="split_depend"
+        android:negativeButtonText="取消"
+        android:positiveButtonText="確定"
+        android:title="@string/pref_title_split_depend" />
+</PreferenceScreen>

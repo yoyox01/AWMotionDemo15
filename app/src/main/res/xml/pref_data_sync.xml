@@ -1,0 +1,45 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <MultiSelectListPreference
+        android:defaultValue="@array/pref_sensor_type_default_values"
+        android:entries="@array/pref_sensor_type_titles"
+        android:entryValues="@array/pref_sensor_type_values"
+        android:key="sensor_type"
+        android:negativeButtonText="取消"
+        android:positiveButtonText="確定"
+        android:summary="@string/pref_sensor_type_description"
+        android:title="@string/pref_title_sensor_type" />
+
+    <MultiSelectListPreference
+        android:defaultValue="@array/pref_sensor_type_cavy_default_values"
+        android:entries="@array/pref_sensor_type_cavy_titles"
+        android:entryValues="@array/pref_sensor_type_cavy_values"
+        android:key="sensor_type_cavy"
+        android:negativeButtonText="取消"
+        android:positiveButtonText="確定"
+        android:summary="@string/pref_sensor_type_cavy_description"
+        android:title="@string/pref_title_sensor_type_cavy" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_frequency"
+        android:inputType="number"
+        android:dependency="sensor_type"
+        android:key="frequency"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_frequency" />
+
+    <!-- This preference simply launches an intent when selected. Use this UI sparingly, per
+         design guidelines. -->
+    <!--
+    <Preference android:title="@string/pref_title_system_sync_settings">
+        <intent android:action="android.settings.SYNC_SETTINGS" />
+    </Preference>
+    -->
+
+</PreferenceScreen>

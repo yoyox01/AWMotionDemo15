@@ -1,0 +1,9 @@
+DeviceType=AndroidWear
+DeviceName="LG Urbane 6137"
+ActionListFile=GameMotion.txt
+SensorNum=5
+SensorTypeName=Accelerometer,Linear Accelerometer,Gyroscope,Magnetometer,Heart Rate Sensor
+ColumnDescription=Timestamp,Accelerometer,Linear Accelerometer,Gyroscope,Magnetometer,Heart Rate Sensor,Label
+ColumnDim=1,3,3,3,3,1,1
+FrameRate=25
+SegmentationParameters=200,14,3,40,180,1

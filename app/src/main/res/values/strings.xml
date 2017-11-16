@@ -1,0 +1,119 @@
+<resources>
+    <string name="app_name">手錶辨識測試工具V4.4</string>
+    <string name="action_settings">設定</string>
+    <string name="action_connect">連線</string>    
+    <string name="ble_not_supported">BLE is not supported</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">動作切割設定</string>
+
+    <string name="pref_title_split_option">切割動作</string>
+
+    <string name="pref_title_split_method">切割方式</string>
+    <string-array name="pref_split_method_list_titles">
+        <item>使用動作切割</item>
+        <item>使用開始/結束切割</item>
+    </string-array>
+    <string-array name="pref_split_method_list_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string name="pref_title_order_option">動作有順序性</string>
+    <string name="pref_description_split_method">按動作順序依序收集</string>
+
+    <string name="pref_title_repeat_times">次數</string>
+    <string name="pref_default_repeat_times">3</string>
+
+    <string name="pref_title_max_motion">最大動作長度</string>
+    <string name="pref_default_max_motion">200</string>
+
+    <string name="pref_title_low_tolerant">切割時低於門檻容忍次數</string>
+    <string name="pref_default_low_tolerant">3</string>
+
+    <string name="pref_title_low_threshold">低點門檻值</string>
+    <string name="pref_default_low_threshold">40</string>
+
+    <string name="pref_title_high_threshold">高點門檻值</string>
+    <string name="pref_default_high_threshold">180</string>
+
+    <string name="pref_title_split_depend">切割依據</string>
+    <string-array name="pref_split_depend_list_titles">
+        <item>加速度計</item>
+        <item>四元數</item>
+    </string-array>
+    <string-array name="pref_split_depend_list_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_sensors">感測器設定</string>
+
+    <string name="pref_title_sensor_type">設定Android Wear記錄之感測器</string>
+    <string name="pref_sensor_type_description">設定Android Wear記錄之感測器</string>
+    <string name="pref_sensor_type_ok">確定</string>
+    <string name="pref_sensor_type_cancel">取消</string>
+    <string-array name="pref_sensor_type_titles">
+        <item>加速度計</item>
+        <item>線性加速度計</item>
+        <item>陀螺儀</item>
+        <item>磁力計</item>
+        <item>心率計</item>
+    </string-array>
+    <string-array name="pref_sensor_type_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="pref_sensor_type_default_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    <string name="pref_title_sensor_type_cavy">設定豚鼠手環記錄之感測器</string>
+    <string name="pref_sensor_type_cavy_description">設定豚鼠手環記錄之感測器</string>
+    <string name="pref_sensor_type_ok_cavy">確定</string>
+    <string name="pref_sensor_type_cancel_cavy">取消</string>
+    <string-array name="pref_sensor_type_cavy_titles">
+        <item>四元數</item>
+        <item>尤拉角</item>
+        <item>加速度計</item>
+        <item>固定加速度計</item>
+        <item>速度</item>
+    </string-array>
+    <string-array name="pref_sensor_type_cavy_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="pref_sensor_type_cavy_default_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string name="pref_title_frequency">資料頻率</string>
+    <string name="pref_default_frequency">25</string>
+
+    <string name="pref_header_bluetooth">藍牙設定</string>
+
+    <string name="pref_title_timeout">接收端逾時秒數</string>
+    <string name="pref_default_timeout">4</string>
+
+    <string name="pref_title_connect_delay">斷線重連延遲秒數</string>
+    <string name="pref_default_connect_delay">5</string>
+
+
+    <string name="pref_ringtone_silent">Silent</string>
+</resources>
+
+
