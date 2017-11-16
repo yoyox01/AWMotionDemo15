@@ -41,7 +41,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
     // ---------------需加入新Project的部分-----------------
     private String TAG = "MainActivity";
-
+    /*
     //2017/11/16
     Thread connectInternet=new Thread(new Runnable() {
         @Override
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         }
     });
 
-
+*/
 
 
     PhoneBluetoothHandler bluetoothHandler = null;
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         // Context：通常指定為「this」
         // String或int：設定顯示在訊息框裡面的訊息或文字資源
         // int：設定訊息框停留在畫面的時間
-        connectInternet.start();
+        //connectInternet.start();
     }
 
     @Override
