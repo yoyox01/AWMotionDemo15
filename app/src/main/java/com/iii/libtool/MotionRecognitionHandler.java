@@ -17,6 +17,7 @@ import android.widget.Button;
 
 import com.awmotiondemo15.R;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -58,13 +60,13 @@ import org.apache.http.util.EntityUtils;
 
 /**
  * Checks if the app has permission to write to device storage
- *
+ * <p>
  * If the app does not has permission then the user will be prompted to grant permissions
  *
  * @param activity
  */
 
-public class MotionRecognitionHandler implements DataHandler{
+public class MotionRecognitionHandler implements DataHandler {
     private String TAG = "RecognitionHandler";
 
     private MotionSDK motionSDK;
@@ -89,10 +91,6 @@ public class MotionRecognitionHandler implements DataHandler{
     //2017/11/16
 
 
-
-
-
-
     int dataCount = 0;
     long startTime = -1;
     float avgDataRate = 0.0f;
@@ -104,7 +102,7 @@ public class MotionRecognitionHandler implements DataHandler{
     public static final int SINGLE_TEST = 0;
     public static final int GROUP_TEST = 1;
 
-    public MotionRecognitionHandler(Context c, ReadSettings r){
+    public MotionRecognitionHandler(Context c, ReadSettings r) {
         read = r;
         //ModelType = model_type;
         motionSDK = new MotionSDK();
@@ -112,101 +110,101 @@ public class MotionRecognitionHandler implements DataHandler{
         initialize(c);
     }
 
-    public boolean getState(){
+    public boolean getState() {
         return seg.isInMotion();
     }
-    
+
     public void setInMotionListener(MotionEventListener toAdd) {
         in_motion_listener = toAdd;
     }
+
     public void setNonMotionListener(MotionEventListener toAdd) {
         non_motion_listener = toAdd;
     }
+
     public void setActionMotionListener(MotionEventListener toAdd) {
         action_listener = toAdd;
     }
 
-    public float getAvgDataRate(){
+    public float getAvgDataRate() {
         return avgDataRate;
     }
 
-    public void setGroupTest(int g){
+    public void setGroupTest(int g) {
         groupTest = g;
     }
 
-    public int getGroupTest(){
+    public int getGroupTest() {
         return groupTest;
     }
 
-    public SegmentMotion getSegmentMotion(){
+    public SegmentMotion getSegmentMotion() {
         return seg;
     }
 
-    public boolean isInMotion(){
+    public boolean isInMotion() {
         return seg.isInMotion();
     }
 
-    public int getMotionID(){
+    public int getMotionID() {
         return MotionID;
     }
 
-    public int getMotionGroupID(){
+    public int getMotionGroupID() {
         return read.action_group_id[MotionID];
     }
 
-    public int getMotionLength(){
+    public int getMotionLength() {
         int len = Length;
         Length = 0;
         return len;
     }
 
-    public String getMotionName(){
-        Log.i(TAG, "read and TTTTKKKKKHHHHHHHHHHHHH MotionRecognitionHand 159" );
+    public String getMotionName() {
+        Log.i(TAG, "read and TTTTKKKKKHHHHHHHHHHHHH MotionRecognitionHand 159");
         int id = getMotionID();
-        if(id < 0)
+        if (id < 0)
             return "";
-        //else if(id == 0)
-        //    return "非動作";
-        //else if(id > read.action_list_num)
-        //    return "動作ID超過範圍";
+            //else if(id == 0)
+            //    return "非動作";
+            //else if(id > read.action_list_num)
+            //    return "動作ID超過範圍";
         else {
             String result;
             String act;
             int i, j;
-            if(groupTest == GROUP_TEST && read.action_group_num > 0) {
-                for(i = 0; i < read.action_list_id.length && read.action_list_id[i] != id; i++);
-                if(i < read.action_list_id.length) {
+            if (groupTest == GROUP_TEST && read.action_group_num > 0) {
+                for (i = 0; i < read.action_list_id.length && read.action_list_id[i] != id; i++) ;
+                if (i < read.action_list_id.length) {
                     int t = read.action_group_id_map[i];
-                    for(j = 0; j < read.action_group_id.length && read.action_group_id[j] != t; j++);
-                    if(j < read.action_group_id.length) {
+                    for (j = 0; j < read.action_group_id.length && read.action_group_id[j] != t; j++)
+                        ;
+                    if (j < read.action_group_id.length) {
                         result = read.action_group[j] + "(" + read.action_group_id_map[i] + ")";
-                    }
-                    else{
+                    } else {
                         return "動作群組ID=" + t + " (非動作)";
                     }
-                }
-                else{
+                } else {
                     return "動作ID=" + id + " (非動作)";
                 }
-            }
-            else {
-                for(i = 0; i < read.action_list_id.length && read.action_list_id[i] != id; i++);
-                if(i < read.action_list_id.length) {
+            } else {
+                for (i = 0; i < read.action_list_id.length && read.action_list_id[i] != id; i++) ;
+                if (i < read.action_list_id.length) {
                     int t = read.action_list[i].indexOf("(");
-                    if(t >= 0)
+                    if (t >= 0)
                         act = read.action_list[i].substring(0, t);
                     else
                         act = read.action_list[i];
                     result = act + "(" + read.action_list_id[i] + ")";
-                }
-                else{
+                } else {
                     return "動作ID=" + id + " (非動作)";
                 }
             }
             return result;
         }
-	}
-    public  void sentData(final String mData){
+    }
+
+    public void sentDataGet(final String mData) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -214,24 +212,24 @@ public class MotionRecognitionHandler implements DataHandler{
 
                     String uri = Uri.parse("http://140.123.175.101:8888/")
                             .buildUpon()
-                            .appendQueryParameter("data",mData)
+                            .appendQueryParameter("data", mData)
                             .build().toString();
                     URL url = new URL(uri);
 
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    InputStream inputStream     = urlConnection.getInputStream();
-                    BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
+                    InputStream inputStream = urlConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                     String tempStr;
                     StringBuffer stringBuffer = new StringBuffer();
 
-                    while( ( tempStr = bufferedReader.readLine() ) != null ) {
-                        stringBuffer.append( tempStr );
+                    while ((tempStr = bufferedReader.readLine()) != null) {
+                        stringBuffer.append(tempStr);
                     }
 
                     bufferedReader.close();
                     inputStream.close();
                     urlConnection.disconnect();
-                    Log.d("fuck",stringBuffer.toString());
+                    Log.d("fuck", stringBuffer.toString());
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -240,9 +238,53 @@ public class MotionRecognitionHandler implements DataHandler{
         }).start();
     }
 
+    public void sentDataPost(final String mData) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String uri = Uri.parse("http://140.123.175.101:8888/")
+                            .buildUpon()
+                            .build().toString();
+
+                    URL url = new URL(uri);
+
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Connection", "Keep-Alive");
+                    urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                    BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                    writer.write("data=" + URLEncoder.encode(mData, "utf-8"));
+                    writer.flush();
+                    writer.close();
+
+                    InputStream inputStream = urlConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String tempStr;
+                    StringBuffer stringBuffer = new StringBuffer();
+
+                    while ((tempStr = bufferedReader.readLine()) != null) {
+                        stringBuffer.append(tempStr);
+                    }
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    urlConnection.disconnect();
+                    Log.d("fuck", stringBuffer.toString());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     // HEARRRRRRRRRRRRRRRRRRRRRR~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public int dataHandler(float[] data){
+    public int dataHandler(float[] data) {
 
         int id = -1;
         MotionID = id;
@@ -252,24 +294,23 @@ public class MotionRecognitionHandler implements DataHandler{
 
         //float amount=100.00f;
 
-        if(seg.isInMotion()){
-            if(in_motion_listener != null)
+        if (seg.isInMotion()) {
+            if (in_motion_listener != null)
                 in_motion_listener.onEvent(data, -1);
-        }
-        else{
-            if(non_motion_listener != null)
+        } else {
+            if (non_motion_listener != null)
                 non_motion_listener.onEvent(data, -1);
         }
 
         boolean ret = seg.isAnAction();
         Log.i(TAG, Boolean.toString(ret));
-        if(seg.isAnAction()){
+        if (seg.isAnAction()) {
             int c = seg.getMotionData(one_groups_data);
             Length = c;
-            if(c == 0)
+            if (c == 0)
                 c = c - 1 + 1; // debug中斷點使用
             else {
-                Log.i(TAG, "[DealWithData] strValue = " + Length );
+                Log.i(TAG, "[DealWithData] strValue = " + Length);
 
                 //java.util.Arrays.deepToString(one_groups_data);
 
@@ -281,7 +322,7 @@ public class MotionRecognitionHandler implements DataHandler{
 
                     File sdcard = Environment.getExternalStorageDirectory();
                     //Log.i(TAG,"HERE:", sdcard );
-                    file = new File(sdcard,  "Android/data/com.awmotiondemo15/files/Log1.txt"); //輸出檔案位置
+                    file = new File(sdcard, "Android/data/com.awmotiondemo15/files/Log1.txt"); //輸出檔案位置
                     Log.i("Write File:", file + "");
 
                     //fop = context.openFileOutput("Log1.txt", 3);
@@ -291,7 +332,7 @@ public class MotionRecognitionHandler implements DataHandler{
                     if (!file.exists()) { // 如果檔案不存在，建立檔案
                         file.createNewFile();
                     }
-                    Log.i(TAG,"GOOOOOOOOOOOOO");
+                    Log.i(TAG, "GOOOOOOOOOOOOO");
                     //byte[] contentInBytes = S_one_groups_data.getBytes();// 取的字串內容bytes
 
 
@@ -299,26 +340,25 @@ public class MotionRecognitionHandler implements DataHandler{
 
                     String[] S_one_groups_data = new String[one_groups_data.length];
 
-                    for(int i = 0; i < one_groups_data.length; i++){
+                    for (int i = 0; i < one_groups_data.length; i++) {
                         theSensorData = theSensorData + String.valueOf(one_groups_data[i]) + ",";
                         S_one_groups_data[i] = String.valueOf(one_groups_data[i]);
                         //byte[] contentInBytes = S_one_groups_data[i].getBytes();
                         fop.write(S_one_groups_data[i].getBytes());
                         fop.write(',');
-                        if((i > 0) && ((i+1) % 14 == 0))
+                        if ((i > 0) && ((i + 1) % 14 == 0))
                             fop.write('\n');
                     }
                     //fop.write(contentInBytes); //輸出
 
                     fop.flush();
                     fop.close();
-                    sentData("我媽寶"+Math.random());
+                    sentDataGet("我媽寶" + Math.random());
 
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     Log.i("Write E:", e + "");
                     e.printStackTrace();
-                } finally{
+                } finally {
                     try {
                         if (fop != null) {
                             fop.close();
@@ -331,7 +371,7 @@ public class MotionRecognitionHandler implements DataHandler{
 
                 id = motionSDK.predictActivity(one_groups_data, c);
                 MotionID = id;
-                if(action_listener != null)
+                if (action_listener != null)
                     action_listener.onEvent(data, id);
                 seg.startMotion();
             }
@@ -339,9 +379,9 @@ public class MotionRecognitionHandler implements DataHandler{
         return id;
     }
 
-    public void moveFile(Context c, String file){
+    public void moveFile(Context c, String file) {
         File f1 = new File(c.getExternalFilesDir(null), file);
-        if(f1.exists()){
+        if (f1.exists()) {
             boolean deleted = f1.delete();
         }
         InputStream in;
@@ -349,14 +389,14 @@ public class MotionRecognitionHandler implements DataHandler{
         FileWriter output;
         BufferedWriter bwStart;
         String line;
-        try{
+        try {
             in = c.getAssets().open(file);
             reader = new BufferedReader(new InputStreamReader(in));
             File outfile = new File(c.getExternalFilesDir(null), file);
             Log.i(TAG, outfile.getAbsolutePath());
             output = new FileWriter(outfile.getAbsolutePath(), true);
             bwStart = new BufferedWriter(output);
-            while((line=reader.readLine())!=null){
+            while ((line = reader.readLine()) != null) {
                 bwStart.write(line);
                 bwStart.newLine();
             }
@@ -379,10 +419,9 @@ public class MotionRecognitionHandler implements DataHandler{
         motionSDK.setFeatureFile(feature_file);
 
         // initialize model file
-        if(checkOpenCV3Model(c, read.getFile(ReadSettings.MODEL_FILE))){
+        if (checkOpenCV3Model(c, read.getFile(ReadSettings.MODEL_FILE))) {
             transformOpenCV3Model(c, read.getFile(ReadSettings.MODEL_FILE));
-        }
-        else {
+        } else {
             moveFile(c, read.getFile(ReadSettings.MODEL_FILE));
         }
         File f2 = new File(c.getExternalFilesDir(null), read.getFile(ReadSettings.MODEL_FILE));
@@ -390,15 +429,15 @@ public class MotionRecognitionHandler implements DataHandler{
         int r = motionSDK.init(s2, 2, seg.getMaxDataLine(), seg.getDataColumn() + read.getEmptyNum());
     }
 
-    public boolean checkOpenCV3Model(Context c, String file){
+    public boolean checkOpenCV3Model(Context c, String file) {
         InputStream in;
         BufferedReader reader;
         String line;
-        try{
+        try {
             in = c.getAssets().open(file);
             reader = new BufferedReader(new InputStreamReader(in));
-            while((line=reader.readLine())!=null){
-                if(line.equals("   format: 3")) {
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("   format: 3")) {
                     reader.close();    //關檔
                     in.close();
                     return true;
@@ -412,10 +451,10 @@ public class MotionRecognitionHandler implements DataHandler{
         return false;
     }
 
-    public void transformOpenCV3Model(Context c, String file){
+    public void transformOpenCV3Model(Context c, String file) {
         int row = 0;
         File f1 = new File(c.getExternalFilesDir(null), file);
-        if(f1.exists()){
+        if (f1.exists()) {
             boolean deleted = f1.delete();
         }
         InputStream in;
@@ -423,36 +462,31 @@ public class MotionRecognitionHandler implements DataHandler{
         FileWriter output;
         BufferedWriter bwStart;
         String line;
-        try{
+        try {
             in = c.getAssets().open(file);
             reader = new BufferedReader(new InputStreamReader(in));
             File outfile = new File(c.getExternalFilesDir(null), file);
             Log.i(TAG, outfile.getAbsolutePath());
             output = new FileWriter(outfile.getAbsolutePath(), true);
             bwStart = new BufferedWriter(output);
-            while((line=reader.readLine())!=null){
-                if(line.equals("   format: 3")) {
-                }
-                else if(line.startsWith("   svmType:")){
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("   format: 3")) {
+                } else if (line.startsWith("   svmType:")) {
                     bwStart.write("   svm_type:" + line.substring(12));
                     bwStart.newLine();
-                }
-                else if(line.startsWith("   var_count:")) {
+                } else if (line.startsWith("   var_count:")) {
                     bwStart.write("   var_all:" + line.substring(13));
                     bwStart.newLine();
                     bwStart.write("   var_count:" + line.substring(13));
                     bwStart.newLine();
-                }
-                else if(line.startsWith("      rows:")){
+                } else if (line.startsWith("      rows:")) {
                     row = Integer.parseInt(line.substring(12));
-                }
-                else if(line.startsWith("      cols:")){
+                } else if (line.startsWith("      cols:")) {
                     bwStart.write("      rows:" + line.substring(12));
                     bwStart.newLine();
                     bwStart.write("      cols:" + Integer.toString(row));
                     bwStart.newLine();
-                }
-                else {
+                } else {
                     bwStart.write(line);
                     bwStart.newLine();
                 }
@@ -465,7 +499,7 @@ public class MotionRecognitionHandler implements DataHandler{
     }
 
     public int DealWithData(String strValue) {
-    	int n = read.getEmptyNum();
+        int n = read.getEmptyNum();
         float[] data = new float[seg.getDataColumn() + n];
         float sub_time;
         //Log.d(TAG, "[DealWithData] strValue = " +strValue);
@@ -474,7 +508,7 @@ public class MotionRecognitionHandler implements DataHandler{
         Calendar c_end = Calendar.getInstance();
         long c_sub = c_end.getTimeInMillis();
         dataCount = (dataCount + 1) % AVG_FRAME_RATE_RESET;
-        if(dataCount == 0)
+        if (dataCount == 0)
             startTime = c_sub;
         else
             avgDataRate = dataCount * 1000.0f / (c_sub - startTime);
@@ -483,27 +517,26 @@ public class MotionRecognitionHandler implements DataHandler{
         try {
             int i;
             String[] Receiving_Data = strValue.split(",");
-            for(i = 0; i < Receiving_Data.length; i++)
+            for (i = 0; i < Receiving_Data.length; i++)
                 data[i] = Float.parseFloat(Receiving_Data[i]);
-            if(n > 0){
-                for(; n > 0; n--)
+            if (n > 0) {
+                for (; n > 0; n--)
                     data[i++] = 0.0f;
-            }            
+            }
         } catch (Exception e1) {
             Data_Correctness = false;
         }
         if (Data_Correctness) {
             int ret = dataHandler(data);
             return ret;
-        }
-        else
+        } else
             return -2;
     }
 
     public void dataHandlerTest(String asset_datafile_for_test) {
         TestDataHandler handler = new TestDataHandler(context, motionSDK, read.max_data_size, read.data_column * 20);
         int lbl_idx = read.findColumnIndex("Label");
-        
+
         // 測試方式 (任選其一)
         handler.readAndTest(asset_datafile_for_test, lbl_idx); // 資料切割 + 動作辨識測試
         //handler.readAndSingleTest(asset_datafile_for_test, lbl_idx); // 連續動作辨識測試 (CNN)
