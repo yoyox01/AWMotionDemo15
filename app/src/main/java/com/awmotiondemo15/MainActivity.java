@@ -42,56 +42,6 @@ public class MainActivity extends AppCompatActivity {
     // ---------------需加入新Project的部分-----------------
     private String TAG = "MainActivity";
 
-    //2017/11/16
-    Thread connectInternet=new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-
-                BufferedReader br = null;
-                String response = null;
-                //String theSensorData = "51531,865456,487321,4894616,47469,5165,464654,568,8797,";
-                StringBuffer output = new StringBuffer();
-                String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                String savePath = fullPath + File.separator + "Android/data/com.awmotiondemo15/files/Log1"+".txt";
-                Log.i("Write File:", savePath + "");
-                br = new BufferedReader(new FileReader(savePath));
-                String line = "";
-                String theSensorData = "";
-                for (int i=0;i<200;i++) {
-                    line = br.readLine();
-                    theSensorData += line;
-                }
-
-                String uri = Uri.parse("http://140.123.97.110:1337/brushTeeth/uploads/index.php")
-                        .buildUpon()
-                        .appendQueryParameter("data", theSensorData)
-                        .build().toString();
-                URL url = new URL(uri);
-
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream inputStream     = urlConnection.getInputStream();
-                BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
-                String tempStr;
-                StringBuffer stringBuffer = new StringBuffer();
-
-                while( ( tempStr = bufferedReader.readLine() ) != null ) {
-                    stringBuffer.append( tempStr );
-                }
-
-                bufferedReader.close();
-                inputStream.close();
-                urlConnection.disconnect();
-                Log.d("拜託",stringBuffer.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    });
-
-
-
-
     PhoneBluetoothHandler bluetoothHandler = null;
     MotionRecognitionHandler handler = null;
     SensorDataHandler data_handler = null;
@@ -199,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         // Context：通常指定為「this」
         // String或int：設定顯示在訊息框裡面的訊息或文字資源
         // int：設定訊息框停留在畫面的時間
-        connectInternet.start();
+        //connectInternet.start();
     }
 
     @Override

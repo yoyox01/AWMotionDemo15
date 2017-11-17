@@ -17,11 +17,13 @@ import android.widget.Button;
 
 import com.awmotiondemo15.R;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,12 +31,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Calendar;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.R.attr.path;
+import static android.R.attr.start;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -83,14 +87,6 @@ public class MotionRecognitionHandler implements DataHandler{
 
     private int MotionID = -1;
     private int Length = 0;
-
-
-    //2017/11/16
-
-
-
-
-
 
     int dataCount = 0;
     long startTime = -1;
@@ -206,7 +202,85 @@ public class MotionRecognitionHandler implements DataHandler{
         }
 	}
 
+	//GET
+    public  void sentDataGet(final String mData){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //http://140.123.175.101:8888/test.php
+                    String uri = Uri.parse("http://140.123.97.110:1337/brushTeeth/uploads/index.php")
+                            .buildUpon()
+                            .appendQueryParameter("data",mData)
+                            .build().toString();
+                    URL url = new URL(uri);
 
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    InputStream inputStream     = urlConnection.getInputStream();
+                    BufferedReader bufferedReader  = new BufferedReader( new InputStreamReader(inputStream) );
+                    String tempStr;
+                    StringBuffer stringBuffer = new StringBuffer();
+
+                    while( ( tempStr = bufferedReader.readLine() ) != null ) {
+                        stringBuffer.append( tempStr );
+                    }
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    urlConnection.disconnect();
+                    Log.d("Hi",stringBuffer.toString());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    //POST
+    public void sentDataPost(final String mData) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String uri = Uri.parse("http://140.123.97.110:1337/brushTeeth/uploads/dataPost.php")
+                            .buildUpon()
+                            .build().toString();
+
+                    URL url = new URL(uri);
+
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Connection", "Keep-Alive");
+                    urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                    BufferedOutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                    writer.write("data=" + URLEncoder.encode(mData, "utf-8"));
+                    writer.flush();
+                    writer.close();
+
+                    InputStream inputStream = urlConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    String tempStr;
+                    StringBuffer stringBuffer = new StringBuffer();
+
+                    while ((tempStr = bufferedReader.readLine()) != null) {
+                        stringBuffer.append(tempStr);
+                    }
+
+                    bufferedReader.close();
+                    inputStream.close();
+                    urlConnection.disconnect();
+                    Log.d("fuck", stringBuffer.toString());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     // HEARRRRRRRRRRRRRRRRRRRRRR~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public int dataHandler(float[] data){
@@ -218,11 +292,6 @@ public class MotionRecognitionHandler implements DataHandler{
 
 
         //float amount=100.00f;
-
-
-
-
-
 
         if(seg.isInMotion()){
             if(in_motion_listener != null)
@@ -272,9 +341,9 @@ public class MotionRecognitionHandler implements DataHandler{
                     String[] S_one_groups_data = new String[one_groups_data.length];
 
                     for(int i = 0; i < one_groups_data.length; i++){
-                        theSensorData = theSensorData + String.valueOf(one_groups_data[i]) + ",";
                         S_one_groups_data[i] = String.valueOf(one_groups_data[i]);
-                        //byte[] contentInBytes = S_one_groups_data[i].getBytes();
+                        theSensorData = theSensorData + S_one_groups_data[i] + ",";
+                                //byte[] contentInBytes = S_one_groups_data[i].getBytes();
                         fop.write(S_one_groups_data[i].getBytes());
                         fop.write(',');
                         if((i > 0) && ((i+1) % 14 == 0))
@@ -285,10 +354,25 @@ public class MotionRecognitionHandler implements DataHandler{
                     fop.flush();
                     fop.close();
 
+                    /*
+                    BufferedReader br = null;
+                    String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    String savePath = fullPath + File.separator + "Android/data/com.awmotiondemo15/files/Log1"+".txt";
+                    Log.i("Write File:", savePath + "");
+                    br = new BufferedReader(new FileReader(savePath));
+                    String line = "";
+                    for (int i=0;i<50;i++) {
+                        line = br.readLine();
+                        theSensorData += line;
+                    }
+                    br.close();
+                    */
+
                     //GET
-                    //connectInternet.start();
-
-
+                    //sentDataGet(theSensorData);
+                    //POST
+                    sentDataPost(theSensorData);
+                    theSensorData = "";
                 }
                 catch (IOException e) {
                     Log.i("Write E:", e + "");
@@ -303,14 +387,6 @@ public class MotionRecognitionHandler implements DataHandler{
                         e.printStackTrace();
                     }
                 }
-
-
-
-
-
-
-
-
 
 
                 id = motionSDK.predictActivity(one_groups_data, c);
