@@ -273,7 +273,7 @@ public class MotionRecognitionHandler implements DataHandler{
                     bufferedReader.close();
                     inputStream.close();
                     urlConnection.disconnect();
-                    Log.d("fuck", stringBuffer.toString());
+                    Log.d("Hello", stringBuffer.toString());
 
                 } catch (IOException e) {
                     e.printStackTrace();
